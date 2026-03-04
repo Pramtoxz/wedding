@@ -21,7 +21,16 @@ class InvitationController extends Controller
         $guest = null;
 
         if ($guestCode) {
-            $guest = $wedding->guests()->where('invitation_code', $guestCode)->first();
+            $guestData = $wedding->guests()->where('invitation_code', $guestCode)->first();
+            if ($guestData) {
+                $guest = $guestData;
+                // Combine name with partner name for display
+                if ($guestData->partner_name) {
+                    $guest->display_name = $guestData->name . ' ' . $guestData->partner_name;
+                } else {
+                    $guest->display_name = $guestData->name;
+                }
+            }
         }
 
         return Inertia::render('Invitation/Show', [

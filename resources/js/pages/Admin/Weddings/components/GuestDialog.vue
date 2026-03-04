@@ -13,6 +13,13 @@
         </div>
 
         <div class="space-y-2">
+          <Label for="partner_name">Nama Keluarga/Partner</Label>
+          <Input id="partner_name" v-model="form.partner_name" placeholder="& Keluarga" />
+          <p class="text-xs text-muted-foreground">Opsional, akan ditampilkan di undangan</p>
+          <InputError :message="form.errors.partner_name" />
+        </div>
+
+        <div class="space-y-2">
           <Label for="whatsapp_number">Nomor WhatsApp *</Label>
           <Input id="whatsapp_number" v-model="form.whatsapp_number" type="tel" placeholder="08123456789" required />
           <p class="text-xs text-muted-foreground">Untuk mengirim undangan via WhatsApp</p>
@@ -51,6 +58,7 @@ const emit = defineEmits<{
 
 const form = useForm({
   name: '',
+  partner_name: '',
   whatsapp_number: '',
 })
 

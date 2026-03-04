@@ -14,14 +14,15 @@
       v-if="!isOpened"
       :bride-name="wedding.bride_name"
       :groom-name="wedding.groom_name"
-      :guest-name="guest?.name"
+      :guest-name="guest?.display_name || guest?.name"
       @open="openInvitation"
     />
 
-    <div v-show="isOpened" class="relative">
+    <div v-show="isOpened" class="relative pb-20">
       <MusicPlayer :is-playing="isMusicPlaying" @toggle="toggleMusic" />
+      <BottomNav :primary-color="wedding.theme_primary_color" />
 
-      <section ref="heroRef" class="section-animate">
+      <section ref="heroRef" class="section-animate" id="hero">
         <HeroSection
           :bride-name="wedding.bride_name"
           :groom-name="wedding.groom_name"
@@ -38,7 +39,7 @@
         <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="currentColor" class="text-gray-100"></path>
       </svg>
 
-      <section ref="coupleRef" class="section-animate">
+      <section ref="coupleRef" class="section-animate" id="couple">
         <CoupleSection
           :bride-name="wedding.bride_name"
           :bride-father-name="wedding.bride_father_name"
@@ -55,7 +56,7 @@
         <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" fill="currentColor" class="text-white"></path>
       </svg>
 
-      <section ref="eventRef" class="section-animate">
+      <section ref="eventRef" class="section-animate" id="event">
         <EventSection v-if="wedding.events.length > 0" :events="wedding.events" />
       </section>
 
@@ -63,7 +64,7 @@
         <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" fill="currentColor" class="text-gray-50"></path>
       </svg>
 
-      <section ref="galleryRef" class="section-animate">
+      <section ref="galleryRef" class="section-animate" id="gallery">
         <GallerySection v-if="wedding.galleries.length > 0" :galleries="wedding.galleries" />
       </section>
 
@@ -71,7 +72,7 @@
         <path d="M0,0V7.23C0,65.52,268.63,112.77,600,112.77S1200,65.52,1200,7.23V0Z" fill="currentColor" class="text-white"></path>
       </svg>
 
-      <section ref="wishRef" class="section-animate">
+      <section ref="wishRef" class="section-animate" id="wish">
         <WishSection
           ref="wishSectionRef"
           :wishes="wedding.wishes"
@@ -87,7 +88,7 @@
         <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" :fill="wedding.theme_primary_color"></path>
       </svg>
 
-      <section ref="giftRef" class="section-animate">
+      <section ref="giftRef" class="section-animate" id="gift">
         <GiftSection
           v-if="wedding.gifts.length > 0"
           :gifts="wedding.gifts"
@@ -95,10 +96,12 @@
         />
       </section>
 
-      <section class="py-12 px-6 text-center" :style="{ backgroundColor: 'var(--primary-color)' }">
-        <p class="text-white text-lg">{{ wedding.closing_text }}</p>
-        <p class="text-white/80 mt-4">{{ wedding.bride_name }} & {{ wedding.groom_name }}</p>
-      </section>
+      <QuranSection
+        :bride-name="wedding.bride_name"
+        :groom-name="wedding.groom_name"
+        :primary-color="wedding.theme_primary_color"
+        :closing-text="wedding.closing_text"
+      />
 
       <footer class="relative py-8 px-6 bg-gradient-to-b from-gray-900 to-black text-white overflow-hidden">
         <div class="absolute inset-0 opacity-10">
@@ -148,6 +151,8 @@ import GallerySection from './components/GallerySection.vue'
 import WishSection from './components/WishSection.vue'
 import GiftSection from './components/GiftSection.vue'
 import MusicPlayer from './components/MusicPlayer.vue'
+import QuranSection from './components/QuranSection.vue'
+import BottomNav from './components/BottomNav.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -156,9 +161,11 @@ interface Wedding {
   bride_name: string
   bride_father_name: string | null
   bride_mother_name: string | null
+  bride_photo: string | null
   groom_name: string
   groom_father_name: string | null
   groom_mother_name: string | null
+  groom_photo: string | null
   wedding_date: string
   cover_image: string | null
   opening_text: string | null
@@ -178,6 +185,8 @@ interface Wedding {
 interface Guest {
   id: number
   name: string
+  partner_name?: string
+  display_name?: string
   invitation_code: string
 }
 

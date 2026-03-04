@@ -11,6 +11,7 @@ class WeddingGuest extends Model
     protected $fillable = [
         'wedding_id',
         'name',
+        'partner_name',
         'whatsapp_number',
         'invitation_code',
     ];
