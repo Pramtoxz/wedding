@@ -1,4 +1,22 @@
 <template>
+  <Head>
+    <title>{{ wedding.bride_name }} & {{ wedding.groom_name }} - Wedding Invitation</title>
+    <meta name="description" :content="`Undangan Pernikahan ${wedding.bride_name} & ${wedding.groom_name} - ${formatDate(wedding.wedding_date)}`" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" :content="`${wedding.bride_name} & ${wedding.groom_name}`" />
+    <meta property="og:description" :content="`Undangan Pernikahan ${wedding.bride_name} & ${wedding.groom_name} - ${formatDate(wedding.wedding_date)}`" />
+    <meta property="og:image" :content="wedding.cover_image ? `${appUrl}/storage/${wedding.cover_image}` : `${appUrl}/favicon.svg`" />
+    <meta property="og:url" :content="`${appUrl}/invitation/${wedding.slug}`" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" :content="`${wedding.bride_name} & ${wedding.groom_name}`" />
+    <meta name="twitter:description" :content="`Undangan Pernikahan ${wedding.bride_name} & ${wedding.groom_name} - ${formatDate(wedding.wedding_date)}`" />
+    <meta name="twitter:image" :content="wedding.cover_image ? `${appUrl}/storage/${wedding.cover_image}` : `${appUrl}/favicon.svg`" />
+  </Head>
+  
   <div 
     class="min-h-screen overflow-x-hidden"
     :style="{
@@ -138,8 +156,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { useForm } from '@inertiajs/vue3'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useForm, Head } from '@inertiajs/vue3'
 import Swal from 'sweetalert2'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -194,6 +212,8 @@ const props = defineProps<{
   wedding: Wedding
   guest: Guest | null
 }>()
+
+const appUrl = computed(() => window.location.origin)
 
 const isOpened = ref(false)
 const isMusicPlaying = ref(false)
