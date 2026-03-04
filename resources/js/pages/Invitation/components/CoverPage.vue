@@ -73,6 +73,8 @@
           <p class="text-xs md:text-sm tracking-wider uppercase opacity-90 mb-1">Kepada Yth.</p>
           <p class="text-lg md:text-2xl font-semibold">{{ guestName }}</p>
         </div>
+        
+      <p class="mt-4 text-xs md:text-sm opacity-70 animate-fade-scale">Mohon Maaf bila Ada Kesalahan dalam Penulisan Nama/Gelar</p>
       </div>
       
       <div class="opacity-0 animate-fade-scale" style="animation-delay: 1.7s">
