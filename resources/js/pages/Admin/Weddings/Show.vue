@@ -138,6 +138,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
+import Swal from 'sweetalert2'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -186,6 +187,14 @@ const shareWhatsapp = async () => {
 
 const copyLink = () => {
   navigator.clipboard.writeText(invitationUrl.value)
-  alert('Link berhasil disalin!')
+  Swal.fire({
+    icon: 'success',
+    title: 'Berhasil!',
+    text: 'Link berhasil disalin!',
+    timer: 2000,
+    showConfirmButton: false,
+    toast: true,
+    position: 'top-end'
+  })
 }
 </script>

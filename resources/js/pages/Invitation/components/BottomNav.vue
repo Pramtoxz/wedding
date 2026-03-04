@@ -6,7 +6,7 @@
           <button
             v-for="item in navItems"
             :key="item.id"
-            @click="scrollToSection(item.id)"
+            @click="handleNavClick(item.id)"
             :class="[
               'group relative flex flex-col items-center justify-center gap-0.5 px-2 py-1.5 rounded-xl transition-all duration-300',
               activeSection === item.id 
@@ -52,18 +52,38 @@
         </div>
       </nav>
     </div>
+
+    <!-- Page Transition Animation -->
+    <Transition name="page-flip">
+      <div 
+        v-if="showTransition" 
+        class="fixed inset-0 z-50 pointer-events-none"
+        :style="{ transformOrigin: 'bottom right' }"
+      >
+        <div 
+          ref="lottieContainer" 
+          class="absolute bottom-0 right-0 w-full h-full"
+          :style="transitionStyle"
+        ></div>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { Home, Users, Calendar, Image, MessageCircle, Gift } from 'lucide-vue-next'
+import lottie from 'lottie-web'
+import paperPlaneAnimation from '@/assets/lottie/paper-plane.json'
 
 defineProps<{
   primaryColor: string
 }>()
 
 const activeSection = ref('hero')
+const showTransition = ref(false)
+const lottieContainer = ref<HTMLElement | null>(null)
+let lottieAnimation: any = null
 
 const navItems = [
   { id: 'hero', label: 'Home', icon: Home },
@@ -73,6 +93,44 @@ const navItems = [
   { id: 'wish', label: 'Wishes', icon: MessageCircle },
   { id: 'gift', label: 'Gift', icon: Gift },
 ]
+
+const transitionStyle = computed(() => ({
+  animation: 'pageFlip 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+}))
+
+const handleNavClick = (sectionId: string) => {
+  // Trigger animation
+  showTransition.value = true
+  
+  // Initialize lottie animation
+  setTimeout(() => {
+    if (lottieContainer.value && !lottieAnimation) {
+      lottieAnimation = lottie.loadAnimation({
+        container: lottieContainer.value,
+        renderer: 'svg',
+        loop: false,
+        autoplay: true,
+        animationData: paperPlaneAnimation,
+      })
+    } else if (lottieAnimation) {
+      lottieAnimation.goToAndPlay(0)
+    }
+  }, 50)
+  
+  // Scroll to section
+  setTimeout(() => {
+    scrollToSection(sectionId)
+  }, 200)
+  
+  // Hide animation
+  setTimeout(() => {
+    showTransition.value = false
+    if (lottieAnimation) {
+      lottieAnimation.destroy()
+      lottieAnimation = null
+    }
+  }, 800)
+}
 
 const scrollToSection = (sectionId: string) => {
   const element = document.getElementById(sectionId)
@@ -116,5 +174,35 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('scroll', handleScroll)
+  if (lottieAnimation) {
+    lottieAnimation.destroy()
+  }
 })
 </script>
+
+<style scoped>
+@keyframes pageFlip {
+  0% {
+    transform: translate(0, 0) scale(0.3) rotate(0deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(-30vw, -30vh) scale(1.5) rotate(-15deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-80vw, -80vh) scale(3) rotate(-30deg);
+    opacity: 0;
+  }
+}
+
+.page-flip-enter-active,
+.page-flip-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.page-flip-enter-from,
+.page-flip-leave-to {
+  opacity: 0;
+}
+</style>

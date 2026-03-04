@@ -88,9 +88,19 @@ class WeddingGuestController extends Controller
         if (substr($whatsappNumber, 0, 1) === '0') {
             $whatsappNumber = '62' . substr($whatsappNumber, 1);
         }
+        $guest->update(['status_kirim' => true]);
 
         return response()->json([
             'whatsapp_link' => "https://wa.me/{$whatsappNumber}?text=" . urlencode($message),
         ]);
+    }
+
+    public function toggleStatusKirim(Wedding $wedding, WeddingGuest $guest)
+    {
+        $this->authorize('update', $wedding);
+        
+        $guest->update(['status_kirim' => !$guest->status_kirim]);
+        
+        return back()->with('success', 'Status kirim berhasil diupdate');
     }
 }

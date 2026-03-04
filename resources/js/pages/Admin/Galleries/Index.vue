@@ -56,6 +56,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
+import Swal from 'sweetalert2'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -91,8 +92,29 @@ const openDialog = (weddingId: number) => {
 }
 
 const deleteGallery = (weddingId: number, galleryId: number) => {
-  if (confirm('Hapus foto ini?')) {
-    router.delete(`/admin/weddings/${weddingId}/galleries/${galleryId}`)
-  }
+  Swal.fire({
+    title: 'Hapus Foto?',
+    text: 'Foto akan dihapus permanen',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      router.delete(`/admin/weddings/${weddingId}/galleries/${galleryId}`, {
+        onSuccess: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Terhapus!',
+            text: 'Foto berhasil dihapus',
+            timer: 2000,
+            showConfirmButton: false
+          })
+        }
+      })
+    }
+  })
 }
 </script>

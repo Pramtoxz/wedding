@@ -24,6 +24,15 @@
               @input="handleSearch"
             />
           </div>
+          <select 
+            v-model="statusFilter"
+            @change="handleFilterChange"
+            class="px-3 py-2 border rounded-md text-sm bg-background"
+          >
+            <option value="all">Semua Status</option>
+            <option value="sent">Terkirim</option>
+            <option value="not_sent">Belum Terkirim</option>
+          </select>
         </div>
 
         <Card v-for="wedding in weddings" :key="wedding.id">
@@ -47,10 +56,27 @@
               <div v-for="guest in paginatedGuests(wedding.guests)" :key="guest.id" class="p-3 border rounded-lg">
                 <div class="flex items-start justify-between gap-3">
                   <div class="flex-1 min-w-0">
-                    <h3 class="font-medium">{{ guest.name }}</h3>
-                    <p class="text-sm text-muted-foreground mt-1">{{ guest.whatsapp_number }}</p>
+                    <div class="flex items-center gap-2 mb-1">
+                      <h3 class="font-medium">{{ guest.name }}</h3>
+                      <span 
+                        v-if="guest.status_kirim" 
+                        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
+                      >
+                        Terkirim
+                      </span>
+                    </div>
+                    <p class="text-sm text-muted-foreground">{{ guest.whatsapp_number }}</p>
                   </div>
-                  <div class="flex gap-2">
+                  <div class="flex items-center gap-2">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        :checked="guest.status_kirim"
+                        @change="toggleStatus(wedding.id, guest.id)"
+                        class="sr-only peer"
+                      >
+                      <div class="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-green-600"></div>
+                    </label>
                     <Button 
                       variant="outline" 
                       size="sm"
@@ -65,9 +91,9 @@
                 </div>
               </div>
               
-              <div v-if="wedding.guests.length > itemsPerPage" class="flex items-center justify-between pt-4 border-t">
+              <div v-if="getTotalFilteredGuests(wedding.guests) > itemsPerPage" class="flex items-center justify-between pt-4 border-t">
                 <p class="text-sm text-muted-foreground">
-                  Menampilkan {{ getStartIndex(wedding.id) + 1 }} - {{ Math.min(getEndIndex(wedding.id), wedding.guests.length) }} dari {{ wedding.guests.length }} tamu
+                  Menampilkan {{ getStartIndex(wedding.id) + 1 }} - {{ Math.min(getEndIndex(wedding.id), getTotalFilteredGuests(wedding.guests)) }} dari {{ getTotalFilteredGuests(wedding.guests) }} tamu
                 </p>
                 <Pagination>
                   <PaginationList>
@@ -78,7 +104,7 @@
                       />
                     </PaginationListItem>
                     
-                    <PaginationListItem v-for="page in getPageNumbers(wedding.id, wedding.guests.length)" :key="page">
+                    <PaginationListItem v-for="page in getPageNumbers(wedding.id, getTotalFilteredGuests(wedding.guests))" :key="page">
                       <PaginationLink
                         v-if="page !== '...'"
                         :is-active="currentPages[wedding.id] === page"
@@ -91,7 +117,7 @@
                     
                     <PaginationListItem>
                       <PaginationNext 
-                        :disabled="getEndIndex(wedding.id) >= wedding.guests.length"
+                        :disabled="getEndIndex(wedding.id) >= getTotalFilteredGuests(wedding.guests)"
                         @click="nextPage(wedding.id)"
                       />
                     </PaginationListItem>
@@ -111,6 +137,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
+import Swal from 'sweetalert2'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -129,6 +156,7 @@ interface Guest {
   id: number
   name: string
   whatsapp_number: string
+  status_kirim: boolean
 }
 
 interface Wedding {
@@ -147,6 +175,7 @@ const props = defineProps<{
 const showDialog = ref(false)
 const selectedWeddingId = ref(0)
 const searchQuery = ref(props.search || '')
+const statusFilter = ref('all')
 const itemsPerPage = 10
 const currentPages = reactive<Record<number, number>>({})
 
@@ -174,14 +203,26 @@ const handleSearch = () => {
   })
 }
 
+const handleFilterChange = () => {
+  // Filter will be applied client-side
+}
+
+const filteredGuests = (guests: Guest[]) => {
+  if (statusFilter.value === 'all') return guests
+  if (statusFilter.value === 'sent') return guests.filter(g => g.status_kirim)
+  if (statusFilter.value === 'not_sent') return guests.filter(g => !g.status_kirim)
+  return guests
+}
+
 const paginatedGuests = (guests: Guest[]) => {
   const weddingId = props.weddings.find(w => w.guests === guests)?.id
   if (!weddingId) return guests
   
+  const filtered = filteredGuests(guests)
   const page = currentPages[weddingId] || 1
   const start = (page - 1) * itemsPerPage
   const end = start + itemsPerPage
-  return guests.slice(start, end)
+  return filtered.slice(start, end)
 }
 
 const getStartIndex = (weddingId: number) => {
@@ -192,6 +233,10 @@ const getStartIndex = (weddingId: number) => {
 const getEndIndex = (weddingId: number) => {
   const page = currentPages[weddingId] || 1
   return page * itemsPerPage
+}
+
+const getTotalFilteredGuests = (guests: Guest[]) => {
+  return filteredGuests(guests).length
 }
 
 const nextPage = (weddingId: number) => {
@@ -236,15 +281,44 @@ const sendWhatsapp = async (weddingId: number, guestId: number) => {
     const data = await response.json()
     if (data.whatsapp_link) {
       window.open(data.whatsapp_link, '_blank')
+      // Reload to update status
+      router.reload({ only: ['weddings'] })
     }
   } catch (error) {
     console.error('Error sending WhatsApp:', error)
   }
 }
 
+const toggleStatus = (weddingId: number, guestId: number) => {
+  router.patch(`/admin/weddings/${weddingId}/guests/${guestId}/toggle-status`, {}, {
+    preserveScroll: true,
+  })
+}
+
 const deleteGuest = (weddingId: number, guestId: number) => {
-  if (confirm('Hapus tamu ini?')) {
-    router.delete(`/admin/weddings/${weddingId}/guests/${guestId}`)
-  }
+  Swal.fire({
+    title: 'Hapus Tamu?',
+    text: 'Data tamu akan dihapus permanen',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Ya, Hapus!',
+    cancelButtonText: 'Batal'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      router.delete(`/admin/weddings/${weddingId}/guests/${guestId}`, {
+        onSuccess: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Terhapus!',
+            text: 'Tamu berhasil dihapus',
+            timer: 2000,
+            showConfirmButton: false
+          })
+        }
+      })
+    }
+  })
 }
 </script>

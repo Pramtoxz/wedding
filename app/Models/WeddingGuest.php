@@ -14,6 +14,7 @@ class WeddingGuest extends Model
         'partner_name',
         'whatsapp_number',
         'invitation_code',
+        'status_kirim',
     ];
 
     public function wedding(): BelongsTo

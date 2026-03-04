@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <div ref="lottieContainer" class="w-32 h-32 md:w-40 md:h-40 mx-auto mb-8"></div>
+      <div ref="lottieContainer" class="w-full h-full md:w-64 md:h-64 mx-auto mb-8"></div>
 
       <div class="flex items-center justify-center gap-4 mb-6">
         <div class="h-px flex-1 max-w-32 bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
@@ -52,7 +52,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import lottie from 'lottie-web'
-import paperPlaneAnimation from '@/assets/lottie/paper-plane.json'
+import paperPlaneAnimation from '@/assets/lottie/wedding.json'
 
 defineProps<{
   brideName: string
@@ -69,9 +69,15 @@ onMounted(() => {
     lottieAnimation = lottie.loadAnimation({
       container: lottieContainer.value,
       renderer: 'svg',
-      loop: true,
+      loop: false,
       autoplay: true,
       animationData: paperPlaneAnimation,
+    })
+
+    lottieAnimation.addEventListener('complete', () => {
+      setTimeout(() => {
+        lottieAnimation.goToAndPlay(0)
+      }, 2000) 
     })
   }
 })

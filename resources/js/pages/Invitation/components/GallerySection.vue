@@ -52,45 +52,55 @@
 
     <div 
       v-if="lightboxOpen" 
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-sm p-4"
       @click="closeLightbox"
     >
       <button 
-        class="absolute top-6 right-6 text-white hover:scale-110 transition-transform"
+        class="absolute top-4 right-4 md:top-6 md:right-6 text-white hover:scale-110 transition-transform z-50"
         @click="closeLightbox"
       >
-        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-8 h-8 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
       
       <button 
         v-if="currentImageIndex > 0"
-        class="absolute left-6 text-white hover:scale-110 transition-transform"
+        class="absolute left-2 md:left-6 text-white hover:scale-110 transition-transform z-50 bg-black/50 rounded-full p-2"
         @click.stop="previousImage"
       >
-        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
         </svg>
       </button>
       
-      <div class="max-w-5xl max-h-[90vh] p-4" @click.stop>
+      <div class="relative w-full h-full flex items-center justify-center" @click.stop>
         <img 
           :src="`/storage/${galleries[currentImageIndex].image_path}`" 
           :alt="galleries[currentImageIndex].caption"
-          class="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-scale-in"
+          class="max-w-full max-h-full w-auto h-auto object-contain rounded-lg shadow-2xl animate-scale-in"
         />
+        <div 
+          v-if="galleries[currentImageIndex].caption" 
+          class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/70 text-white px-6 py-3 rounded-full text-sm md:text-base max-w-[90%] text-center"
+        >
+          {{ galleries[currentImageIndex].caption }}
+        </div>
       </div>
       
       <button 
         v-if="currentImageIndex < galleries.length - 1"
-        class="absolute right-6 text-white hover:scale-110 transition-transform"
+        class="absolute right-2 md:right-6 text-white hover:scale-110 transition-transform z-50 bg-black/50 rounded-full p-2"
         @click.stop="nextImage"
       >
-        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-6 h-6 md:w-10 md:h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
         </svg>
       </button>
+      
+      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded-full">
+        {{ currentImageIndex + 1 }} / {{ galleries.length }}
+      </div>
     </div>
   </section>
 </template>

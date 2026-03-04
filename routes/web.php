@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('weddings/{wedding}/guests/{guest}', [WeddingGuestController::class, 'update'])->name('weddings.guests.update');
         Route::delete('weddings/{wedding}/guests/{guest}', [WeddingGuestController::class, 'destroy'])->name('weddings.guests.destroy');
         Route::get('weddings/{wedding}/guests/{guest}/whatsapp', [WeddingGuestController::class, 'sendWhatsapp'])->name('weddings.guests.whatsapp');
+        Route::patch('weddings/{wedding}/guests/{guest}/toggle-status', [WeddingGuestController::class, 'toggleStatusKirim'])->name('weddings.guests.toggle-status');
 
         Route::post('weddings/{wedding}/gifts', [WeddingGiftController::class, 'store'])->name('weddings.gifts.store');
         Route::put('weddings/{wedding}/gifts/{gift}', [WeddingGiftController::class, 'update'])->name('weddings.gifts.update');

@@ -59,7 +59,7 @@
             <div class="h-px w-16 md:w-24 bg-white/60"></div>
           </div>
           
-          <div class="mt-3 opacity-0 animate-fade-in" style="animation-delay: 1.1s">
+          <div class="mt-3 opacity-0 animate-fade-in" style="animation-delay: 3.1s">
             <p class="text-3xl md:text-5xl lg:text-6xl font-bold leading-tight" 
                style="text-shadow: 3px 3px 6px rgba(0,0,0,0.4)">
               {{ groomName }}
@@ -99,7 +99,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import lottie from 'lottie-web'
-import paperPlaneAnimation from '@/assets/lottie/paper-plane.json'
+import paperPlaneAnimation from '@/assets/lottie/email.json'
 
 defineProps<{
   brideName: string
