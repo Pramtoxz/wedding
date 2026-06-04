@@ -27,7 +27,7 @@
           </h2>
           <div class="h-1 bg-gradient-to-r from-transparent via-[var(--accent-color)] to-transparent rounded-full"></div>
         </div>
-        <p class="mt-6 text-gray-600 text-lg max-w-xl mx-auto leading-relaxed">
+        <p class="mt-6 text-gray-700 text-lg max-w-xl mx-auto leading-relaxed">
           Doa restu Anda adalah karunia terindah bagi kami. Namun jika memberi adalah ungkapan kasih, Anda dapat mengirimkan melalui:
         </p>
       </div>
@@ -63,11 +63,11 @@
               </div>
               
               <div class="pl-15">
-                <p class="text-2xl md:text-3xl font-mono font-bold mb-2 tracking-wider">
+                <p class="text-2xl md:text-3xl font-mono font-bold mb-2 tracking-wider text-gray-900">
                   {{ gift.account_number }}
                 </p>
-                <p class="text-gray-600 text-sm md:text-base">
-                  a.n <span class="font-semibold">{{ gift.account_name }}</span>
+                <p class="text-gray-700 text-sm md:text-base">
+                  a.n <span class="font-semibold text-gray-900">{{ gift.account_name }}</span>
                 </p>
               </div>
             </div>
@@ -90,7 +90,7 @@
                fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
           </svg>
-          <p class="text-gray-600 text-sm md:text-base">
+          <p class="text-gray-700 text-sm md:text-base">
             Terima kasih atas perhatian dan kehadirannya
           </p>
         </div>
@@ -100,8 +100,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
 import { Copy } from 'lucide-vue-next'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 defineProps<{
   gifts: any[]

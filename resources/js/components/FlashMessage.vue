@@ -18,9 +18,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import { usePage } from '@inertiajs/vue3'
 import { CheckCircle, AlertCircle, X } from 'lucide-vue-next'
+import { ref, watch } from 'vue'
 
 const page = usePage()
 const show = ref(false)

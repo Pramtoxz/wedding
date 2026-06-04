@@ -36,13 +36,14 @@ class WeddingController extends Controller
             'bride_name' => 'required|string|max:255',
             'bride_father_name' => 'nullable|string|max:255',
             'bride_mother_name' => 'nullable|string|max:255',
-            'bride_photo' => 'nullable|image|max:2048',
+            'bride_photo' => 'nullable|image|max:10240',
             'groom_name' => 'required|string|max:255',
             'groom_father_name' => 'nullable|string|max:255',
             'groom_mother_name' => 'nullable|string|max:255',
-            'groom_photo' => 'nullable|image|max:2048',
+            'groom_photo' => 'nullable|image|max:10240',
             'wedding_date' => 'required|date',
-            'cover_image' => 'nullable|image|max:2048',
+            'cover_image' => 'nullable|image|max:10240',
+            'cover_page_image' => 'nullable|image|max:10240',
             'opening_text' => 'nullable|string',
             'closing_text' => 'nullable|string',
             'music_url' => 'nullable|string',
@@ -57,6 +58,10 @@ class WeddingController extends Controller
 
         if ($request->hasFile('cover_image')) {
             $validated['cover_image'] = $request->file('cover_image')->store('covers', 'public');
+        }
+
+        if ($request->hasFile('cover_page_image')) {
+            $validated['cover_page_image'] = $request->file('cover_page_image')->store('cover-pages', 'public');
         }
 
         if ($request->hasFile('bride_photo')) {
@@ -101,13 +106,14 @@ class WeddingController extends Controller
             'bride_name' => 'required|string|max:255',
             'bride_father_name' => 'nullable|string|max:255',
             'bride_mother_name' => 'nullable|string|max:255',
-            'bride_photo' => 'nullable|image|max:2048',
+            'bride_photo' => 'nullable|image|max:10240',
             'groom_name' => 'required|string|max:255',
             'groom_father_name' => 'nullable|string|max:255',
             'groom_mother_name' => 'nullable|string|max:255',
-            'groom_photo' => 'nullable|image|max:2048',
+            'groom_photo' => 'nullable|image|max:10240',
             'wedding_date' => 'required|date',
-            'cover_image' => 'nullable|image|max:2048',
+            'cover_image' => 'nullable|image|max:10240',
+            'cover_page_image' => 'nullable|image|max:10240',
             'opening_text' => 'nullable|string',
             'closing_text' => 'nullable|string',
             'music_url' => 'nullable|string',
@@ -119,13 +125,20 @@ class WeddingController extends Controller
         ]);
 
         // Remove file fields from validated data - handle separately
-        unset($validated['cover_image'], $validated['bride_photo'], $validated['groom_photo']);
+        unset($validated['cover_image'], $validated['cover_page_image'], $validated['bride_photo'], $validated['groom_photo']);
 
         if ($request->hasFile('cover_image')) {
             if ($wedding->cover_image) {
                 Storage::disk('public')->delete($wedding->cover_image);
             }
             $validated['cover_image'] = $request->file('cover_image')->store('covers', 'public');
+        }
+
+        if ($request->hasFile('cover_page_image')) {
+            if ($wedding->cover_page_image) {
+                Storage::disk('public')->delete($wedding->cover_page_image);
+            }
+            $validated['cover_page_image'] = $request->file('cover_page_image')->store('cover-pages', 'public');
         }
 
         if ($request->hasFile('bride_photo')) {
@@ -154,6 +167,10 @@ class WeddingController extends Controller
 
         if ($wedding->cover_image) {
             Storage::disk('public')->delete($wedding->cover_image);
+        }
+
+        if ($wedding->cover_page_image) {
+            Storage::disk('public')->delete($wedding->cover_page_image);
         }
 
         $wedding->delete();

@@ -136,15 +136,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { Link } from '@inertiajs/vue3'
+import { ArrowLeft, Edit, Share2, Copy } from 'lucide-vue-next'
 import Swal from 'sweetalert2'
-import AppLayout from '@/layouts/AppLayout.vue'
+import { computed } from 'vue'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import { ArrowLeft, Edit, Share2, Copy } from 'lucide-vue-next'
+import AppLayout from '@/layouts/AppLayout.vue'
 
 interface Wedding {
   id: number

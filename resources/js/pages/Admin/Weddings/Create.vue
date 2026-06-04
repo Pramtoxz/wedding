@@ -84,6 +84,13 @@
             </div>
 
             <div class="space-y-2">
+              <Label for="cover_page_image">Foto Background Cover Page</Label>
+              <p class="text-xs text-muted-foreground">Upload gambar untuk background halaman pembuka. Kosongkan untuk menggunakan gradient default.</p>
+              <Input id="cover_page_image" type="file" accept="image/*" @change="handleCoverPageImageChange" />
+              <InputError :message="form.errors.cover_page_image" />
+            </div>
+
+            <div class="space-y-2">
               <Label for="opening_text">Teks Pembuka</Label>
               <textarea 
                 id="opening_text" 
@@ -118,6 +125,7 @@
                   <option value="/music/wedding-4.mp3">Lover</option>
                   <option value="/music/wedding-5.mp3">A Thousand Years</option>
                   <option value="/music/wedding-6.mp3">Until I Found You</option>
+                  <option value="/music/wedding-7.mp3">Beautiful In White</option>
                 </select>
                 <Button 
                   type="button" 
@@ -205,15 +213,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useForm, Link } from '@inertiajs/vue3'
-import AppLayout from '@/layouts/AppLayout.vue'
+import { ArrowLeft, Loader2 } from 'lucide-vue-next'
+import { ref } from 'vue'
+import InputError from '@/components/InputError.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import InputError from '@/components/InputError.vue'
-import { ArrowLeft, Loader2 } from 'lucide-vue-next'
+import AppLayout from '@/layouts/AppLayout.vue'
 
 const form = useForm({
   bride_name: '',
@@ -226,6 +234,7 @@ const form = useForm({
   groom_photo: null as File | null,
   wedding_date: '',
   cover_image: null as File | null,
+  cover_page_image: null as File | null,
   opening_text: '',
   closing_text: '',
   music_url: '',
@@ -256,6 +265,13 @@ const handleGroomPhotoChange = (e: Event) => {
   const target = e.target as HTMLInputElement
   if (target.files && target.files[0]) {
     form.groom_photo = target.files[0]
+  }
+}
+
+const handleCoverPageImageChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    form.cover_page_image = target.files[0]
   }
 }
 

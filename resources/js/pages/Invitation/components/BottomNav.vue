@@ -71,9 +71,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
-import { Home, Users, Calendar, Image, MessageCircle, Gift } from 'lucide-vue-next'
 import lottie from 'lottie-web'
+import { Home, Users, Calendar, Image, MessageCircle, Gift } from 'lucide-vue-next'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import paperPlaneAnimation from '@/assets/lottie/paper-plane.json'
 
 defineProps<{

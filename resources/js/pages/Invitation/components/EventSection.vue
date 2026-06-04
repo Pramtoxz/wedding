@@ -94,8 +94,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
 import { Calendar, Clock, MapPin } from 'lucide-vue-next'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 defineProps<{
   events: any[]

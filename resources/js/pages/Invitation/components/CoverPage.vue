@@ -2,7 +2,18 @@
   <section 
     class="fixed inset-0 z-50 flex items-center justify-center overflow-hidden"
   >
-    <div class="absolute inset-0 bg-gradient-to-br from-[var(--primary-color)] to-[var(--secondary-color)]">
+    <!-- Background Image or Gradient -->
+    <div 
+      v-if="coverPageImage"
+      class="absolute inset-0 bg-cover bg-center"
+      :style="{ backgroundImage: `url(/storage/${coverPageImage})` }"
+    >
+      <div class="absolute inset-0 bg-black/30"></div>
+    </div>
+    <div 
+      v-else
+      class="absolute inset-0 bg-gradient-to-br from-[var(--primary-color)] to-[var(--secondary-color)]"
+    >
       <div class="absolute inset-0 opacity-10">
         <svg class="absolute inset-0 w-full h-full">
           <defs>
@@ -99,14 +110,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
 import lottie from 'lottie-web'
+import { ref, onMounted, onUnmounted } from 'vue'
 import paperPlaneAnimation from '@/assets/lottie/email.json'
 
 defineProps<{
   brideName: string
   groomName: string
   guestName?: string
+  coverPageImage?: string | null
 }>()
 
 defineEmits<{

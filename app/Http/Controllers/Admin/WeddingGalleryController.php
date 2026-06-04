@@ -17,7 +17,7 @@ class WeddingGalleryController extends Controller
 
         $validated = $request->validate([
             'images' => 'required|array',
-            'images.*' => 'image|max:2048',
+            'images.*' => 'image|max:10240',
             'captions' => 'nullable|array',
             'captions.*' => 'nullable|string|max:255',
         ]);

@@ -19,7 +19,7 @@ class WeddingGiftController extends Controller
             'bank_name' => 'required|string|max:255',
             'account_number' => 'required|string|max:255',
             'account_name' => 'required|string|max:255',
-            'qr_code' => 'nullable|image|max:2048',
+            'qr_code' => 'nullable|image|max:10240',
             'order' => 'nullable|integer',
         ]);
 
@@ -42,7 +42,7 @@ class WeddingGiftController extends Controller
             'bank_name' => 'required|string|max:255',
             'account_number' => 'required|string|max:255',
             'account_name' => 'required|string|max:255',
-            'qr_code' => 'nullable|image|max:2048',
+            'qr_code' => 'nullable|image|max:10240',
             'order' => 'nullable|integer',
         ]);
 

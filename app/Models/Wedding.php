@@ -21,6 +21,7 @@ class Wedding extends Model
         'groom_photo',
         'wedding_date',
         'cover_image',
+        'cover_page_image',
         'opening_text',
         'closing_text',
         'music_url',

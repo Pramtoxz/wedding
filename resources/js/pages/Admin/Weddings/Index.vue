@@ -72,10 +72,10 @@
 
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3'
-import AppLayout from '@/layouts/AppLayout.vue'
+import { Plus, Heart, Users, CheckCircle, MessageCircle, Eye, Edit } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Plus, Heart, Users, CheckCircle, MessageCircle, Eye, Edit } from 'lucide-vue-next'
+import AppLayout from '@/layouts/AppLayout.vue'
 
 interface Wedding {
   id: number

@@ -33,6 +33,7 @@
       :bride-name="wedding.bride_name"
       :groom-name="wedding.groom_name"
       :guest-name="guest?.display_name || guest?.name"
+      :cover-page-image="wedding.cover_page_image"
       @open="openInvitation"
     />
 
@@ -94,6 +95,7 @@
         <WishSection
           ref="wishSectionRef"
           :wishes="wedding.wishes"
+          :rsvps="wedding.rsvps"
           :guest-name="guest?.name"
           :processing="wishForm.processing"
           @submit="submitWish"
@@ -131,7 +133,7 @@
           <div class="mb-6">
             <p class="text-sm text-gray-400 mb-2">Made with Developers by</p>
             <a 
-               href="https://www.instagram.com/pramuditometra/" 
+               href="https://www.instagram.com/aldo6816/" 
               target="_blank"
               rel="noopener noreferrer"
               class="group inline-flex items-center gap-3 px-6 py-3 bg-white text-gray-900 rounded-full hover:bg-gray-100 transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-2xl"
@@ -139,7 +141,7 @@
               <svg class="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
               </svg>
-              <span class="font-semibold">Pramudito Metra</span>
+              <span class="font-semibold">Aldo Aditya Putra</span>
               <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
               </svg>
@@ -156,21 +158,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useForm, Head } from '@inertiajs/vue3'
-import Swal from 'sweetalert2'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import CoverPage from './components/CoverPage.vue'
-import HeroSection from './components/HeroSection.vue'
+import Swal from 'sweetalert2'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import BottomNav from './components/BottomNav.vue'
 import CoupleSection from './components/CoupleSection.vue'
+import CoverPage from './components/CoverPage.vue'
 import EventSection from './components/EventSection.vue'
 import GallerySection from './components/GallerySection.vue'
-import WishSection from './components/WishSection.vue'
 import GiftSection from './components/GiftSection.vue'
+import HeroSection from './components/HeroSection.vue'
 import MusicPlayer from './components/MusicPlayer.vue'
 import QuranSection from './components/QuranSection.vue'
-import BottomNav from './components/BottomNav.vue'
+import WishSection from './components/WishSection.vue'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -186,6 +188,7 @@ interface Wedding {
   groom_photo: string | null
   wedding_date: string
   cover_image: string | null
+  cover_page_image: string | null
   opening_text: string | null
   closing_text: string | null
   music_url: string | null
@@ -198,6 +201,7 @@ interface Wedding {
   galleries: any[]
   gifts: any[]
   wishes: any[]
+  rsvps: any[]
 }
 
 interface Guest {
@@ -230,6 +234,7 @@ const giftRef = ref<HTMLElement | null>(null)
 const wishForm = useForm({
   guest_name: props.guest?.name || '',
   message: '',
+  attendance_status: '',
 })
 
 onMounted(() => {
@@ -295,14 +300,16 @@ const formatDate = (date: string) => {
   })
 }
 
-const submitWish = (form: { guest_name: string; message: string }) => {
+const submitWish = (form: { guest_name: string; message: string; attendance_status: string }) => {
   wishForm.guest_name = form.guest_name
   wishForm.message = form.message
+  wishForm.attendance_status = form.attendance_status
   
   wishForm.post(`/invitation/${props.wedding.slug}/wish`, {
     onSuccess: () => {
       if (wishSectionRef.value) {
         wishSectionRef.value.form.message = ''
+        wishSectionRef.value.form.attendance_status = ''
       }
       Swal.fire({
         title: 'Terima Kasih!',

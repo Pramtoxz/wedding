@@ -20,7 +20,22 @@
           </h2>
           <div class="h-1 bg-gradient-to-r from-transparent via-[var(--accent-color)] to-transparent rounded-full"></div>
         </div>
-        <p class="mt-6 text-gray-600 text-lg">Berikan ucapan dan doa terbaik untuk mempelai</p>
+        <p class="mt-6 text-gray-700 text-lg">Berikan ucapan dan doa terbaik untuk mempelai</p>
+        
+        <!-- Stats Badge -->
+        <div class="mt-8 space-y-3">
+          <p class="text-sm text-gray-600">{{ wishes.length }} Comments</p>
+          <div class="flex gap-3 justify-center max-w-md mx-auto">
+            <div class="flex-1 bg-green-100 rounded-lg px-4 py-3 border border-green-200">
+              <p class="text-2xl font-bold text-green-700">{{ attendingCount }}</p>
+              <p class="text-xs text-green-600 font-medium">Hadir</p>
+            </div>
+            <div class="flex-1 bg-red-100 rounded-lg px-4 py-3 border border-red-200">
+              <p class="text-2xl font-bold text-red-700">{{ notAttendingCount }}</p>
+              <p class="text-xs text-red-600 font-medium">Tidak Hadir</p>
+            </div>
+          </div>
+        </div>
       </div>
       
       <form 
@@ -36,7 +51,7 @@
               type="text"
               placeholder="Nama Anda"
               required
-              class="w-full px-6 py-4 rounded-xl border-2 focus:outline-none transition-all duration-300 bg-white"
+              class="w-full px-6 py-4 rounded-xl border-2 focus:outline-none transition-all duration-300 bg-white text-gray-900 placeholder:text-gray-500"
               :class="{ 'border-[var(--primary-color)] shadow-lg': form.guest_name }"
               :style="{ 
                 borderColor: form.guest_name ? 'var(--primary-color)' : '#e5e7eb'
@@ -50,12 +65,32 @@
               placeholder="Tulis ucapan & doa untuk mempelai..."
               required
               rows="5"
-              class="w-full px-6 py-4 rounded-xl border-2 focus:outline-none transition-all duration-300 resize-none bg-white"
+              class="w-full px-6 py-4 rounded-xl border-2 focus:outline-none transition-all duration-300 resize-none bg-white text-gray-900 placeholder:text-gray-500"
               :class="{ 'border-[var(--primary-color)] shadow-lg': form.message }"
               :style="{ 
                 borderColor: form.message ? 'var(--primary-color)' : '#e5e7eb'
               }"
             ></textarea>
+          </div>
+
+          <div class="relative">
+            <select
+              v-model="form.attendance_status"
+              required
+              class="w-full px-6 py-4 rounded-xl border-2 focus:outline-none transition-all duration-300 bg-white text-gray-900 appearance-none cursor-pointer"
+              :class="{ 'border-[var(--primary-color)] shadow-lg': form.attendance_status }"
+              :style="{ 
+                borderColor: form.attendance_status ? 'var(--primary-color)' : '#e5e7eb'
+              }"
+            >
+              <option value="" disabled>Konfirmasi Kehadiran</option>
+              <option value="attending">Hadir</option>
+              <option value="not_attending">Tidak Hadir</option>
+              <option value="maybe">Mungkin Hadir</option>
+            </select>
+            <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
           </div>
           
           <button
@@ -106,7 +141,7 @@
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                 </svg>
               </div>
-              <p class="text-gray-700 leading-relaxed group-hover:text-gray-900 transition-colors">{{ wish.message }}</p>
+              <p class="text-gray-800 leading-relaxed group-hover:text-gray-950 transition-colors">{{ wish.message }}</p>
               <div class="mt-3 flex items-center gap-4 text-sm text-gray-400">
                 <button class="flex items-center gap-1 hover:text-red-500 transition-colors group/like">
                   <svg class="w-4 h-4 group-hover/like:scale-125 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,21 +167,33 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onMounted, onUnmounted } from 'vue'
+import { reactive, ref, onMounted, onUnmounted, computed } from 'vue'
 
 const props = defineProps<{
   wishes: any[]
   guestName?: string
   processing?: boolean
+  rsvps?: any[]
 }>()
 
 defineEmits<{
-  submit: [form: { guest_name: string; message: string }]
+  submit: [form: { guest_name: string; message: string; attendance_status: string }]
 }>()
 
 const form = reactive({
   guest_name: props.guestName || '',
   message: '',
+  attendance_status: '',
+})
+
+const attendingCount = computed(() => {
+  if (!props.rsvps) return 0
+  return props.rsvps.filter((rsvp: any) => rsvp.attendance_status === 'attending').length
+})
+
+const notAttendingCount = computed(() => {
+  if (!props.rsvps) return 0
+  return props.rsvps.filter((rsvp: any) => rsvp.attendance_status === 'not_attending').length
 })
 
 const titleRef = ref<HTMLElement | null>(null)

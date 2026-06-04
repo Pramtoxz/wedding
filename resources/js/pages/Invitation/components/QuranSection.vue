@@ -50,8 +50,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
 import lottie from 'lottie-web'
+import { ref, onMounted, onUnmounted } from 'vue'
 import paperPlaneAnimation from '@/assets/lottie/wedding.json'
 
 defineProps<{

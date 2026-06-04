@@ -37,9 +37,28 @@ class DashboardController extends Controller
                 ];
             });
 
+        $recentWishes = WeddingWish::with('wedding')
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function ($wish) {
+                return [
+                    'id' => $wish->id,
+                    'guest_name' => $wish->guest_name,
+                    'message' => $wish->message,
+                    'created_at' => $wish->created_at,
+                    'wedding' => [
+                        'id' => $wish->wedding->id,
+                        'bride_name' => $wish->wedding->bride_name,
+                        'groom_name' => $wish->wedding->groom_name,
+                    ],
+                ];
+            });
+
         return Inertia::render('Dashboard', [
             'stats' => $stats,
             'recentWeddings' => $recentWeddings,
+            'recentWishes' => $recentWishes,
         ]);
     }
 }

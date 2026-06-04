@@ -93,6 +93,16 @@
             </div>
 
             <div class="space-y-2">
+              <Label for="cover_page_image">Foto Background Cover Page</Label>
+              <p class="text-xs text-muted-foreground">Upload gambar untuk background halaman pembuka. Kosongkan untuk menggunakan gradient default.</p>
+              <div v-if="wedding.cover_page_image" class="mb-2">
+                <img :src="`/storage/${wedding.cover_page_image}`" class="w-32 h-32 object-cover rounded-lg" />
+              </div>
+              <Input id="cover_page_image" type="file" accept="image/*" @change="handleCoverPageImageChange" />
+              <InputError :message="form.errors.cover_page_image" />
+            </div>
+
+            <div class="space-y-2">
               <Label for="opening_text">Teks Pembuka</Label>
               <textarea 
                 id="opening_text" 
@@ -127,6 +137,7 @@
                   <option value="/music/wedding-4.mp3">Lover</option>
                   <option value="/music/wedding-5.mp3">A Thousand Years</option>
                   <option value="/music/wedding-6.mp3">Until I Found You</option>
+                  <option value="/music/wedding-7.mp3">Beautiful In White</option>
                 </select>
                 <Button 
                   type="button" 
@@ -227,15 +238,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { useForm, Link } from '@inertiajs/vue3'
-import AppLayout from '@/layouts/AppLayout.vue'
+import { ArrowLeft, Loader2 } from 'lucide-vue-next'
+import { ref } from 'vue'
+import InputError from '@/components/InputError.vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import InputError from '@/components/InputError.vue'
-import { ArrowLeft, Loader2 } from 'lucide-vue-next'
+import AppLayout from '@/layouts/AppLayout.vue'
 
 interface Wedding {
   id: number
@@ -249,6 +260,7 @@ interface Wedding {
   groom_photo: string | null
   wedding_date: string
   cover_image: string | null
+  cover_page_image: string | null
   opening_text: string | null
   closing_text: string | null
   music_url: string | null
@@ -274,6 +286,7 @@ const form = useForm({
   groom_photo: null as File | null,
   wedding_date: props.wedding.wedding_date.split('T')[0],
   cover_image: null as File | null,
+  cover_page_image: null as File | null,
   opening_text: props.wedding.opening_text || '',
   closing_text: props.wedding.closing_text || '',
   music_url: props.wedding.music_url || '',
@@ -308,6 +321,13 @@ const handleGroomPhotoChange = (e: Event) => {
   }
 }
 
+const handleCoverPageImageChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    form.cover_page_image = target.files[0]
+  }
+}
+
 const toggleMusic = () => {
   if (!audioPlayer.value) return
   
@@ -322,7 +342,7 @@ const toggleMusic = () => {
 }
 
 const submit = () => {
-  if (form.cover_image || form.bride_photo || form.groom_photo) {
+  if (form.cover_image || form.cover_page_image || form.bride_photo || form.groom_photo) {
     form.transform((data) => ({
       ...data,
       _method: 'PUT'

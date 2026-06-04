@@ -54,13 +54,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
+import { Plus, Trash2 } from 'lucide-vue-next'
 import Swal from 'sweetalert2'
-import AppLayout from '@/layouts/AppLayout.vue'
+import { ref } from 'vue'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Plus, Trash2 } from 'lucide-vue-next'
+import AppLayout from '@/layouts/AppLayout.vue'
 import GalleryDialog from '@/pages/Admin/Weddings/components/GalleryDialog.vue'
 
 interface Wedding {

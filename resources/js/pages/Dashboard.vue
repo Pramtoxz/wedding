@@ -23,9 +23,22 @@ interface RecentWedding {
     wishes_count: number;
 }
 
+interface RecentWish {
+    id: number;
+    guest_name: string;
+    message: string;
+    created_at: string;
+    wedding: {
+        id: number;
+        bride_name: string;
+        groom_name: string;
+    };
+}
+
 const props = defineProps<{
     stats: Stats;
     recentWeddings: RecentWedding[];
+    recentWishes: RecentWish[];
 }>();
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -41,6 +54,19 @@ const formatDate = (date: string) => {
         month: 'long',
         year: 'numeric'
     });
+};
+
+const formatRelativeTime = (date: string) => {
+    const now = new Date();
+    const past = new Date(date);
+    const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return 'Baru saja';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} menit lalu`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} jam lalu`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} hari lalu`;
+    
+    return past.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 };
 </script>
 
@@ -164,6 +190,53 @@ const formatDate = (date: string) => {
                         >
                             Buat Undangan Pertama
                         </Link>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-xl border bg-card shadow-sm">
+                <div class="p-6 border-b">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold">Ucapan & Doa Terbaru</h3>
+                            <p class="text-sm text-muted-foreground">10 ucapan terakhir dari semua undangan</p>
+                        </div>
+                        <MessageSquare class="h-5 w-5 text-muted-foreground" />
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div v-if="recentWishes.length > 0" class="space-y-4">
+                        <div 
+                            v-for="wish in recentWishes" 
+                            :key="wish.id"
+                            class="p-4 rounded-lg border hover:bg-accent transition-colors"
+                        >
+                            <div class="flex items-start gap-3">
+                                <div class="h-10 w-10 rounded-full bg-gradient-to-br from-orange-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                                    <span class="text-white font-semibold text-sm">{{ wish.guest_name.charAt(0).toUpperCase() }}</span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <p class="font-semibold text-sm">{{ wish.guest_name }}</p>
+                                        <span class="text-xs text-muted-foreground">•</span>
+                                        <p class="text-xs text-muted-foreground">{{ formatRelativeTime(wish.created_at) }}</p>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground mb-2 line-clamp-2">{{ wish.message }}</p>
+                                    <Link 
+                                        :href="`/admin/weddings/${wish.wedding.id}`"
+                                        class="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                                    >
+                                        <Heart class="h-3 w-3" />
+                                        {{ wish.wedding.bride_name }} & {{ wish.wedding.groom_name }}
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else class="text-center py-12">
+                        <MessageSquare class="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+                        <p class="text-muted-foreground">Belum ada ucapan</p>
+                        <p class="text-sm text-muted-foreground mt-2">Ucapan akan muncul di sini setelah tamu mengirimkan doa dan ucapan</p>
                     </div>
                 </div>
             </div>

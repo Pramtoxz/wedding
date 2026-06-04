@@ -11,6 +11,7 @@ class WeddingWish extends Model
         'wedding_id',
         'guest_name',
         'message',
+        'attendance_status',
         'is_approved',
     ];
 

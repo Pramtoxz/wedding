@@ -49,7 +49,7 @@
         <div class="grid grid-cols-4 gap-2 md:gap-4 max-w-md mx-auto opacity-0 animate-fade-up-smooth" style="animation-delay: 1.4s">
           <div v-for="(value, label) in countdown" :key="label" 
                class="bg-white/10 backdrop-blur-lg rounded-xl md:rounded-2xl p-3 md:p-4 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105">
-            <div class="text-2xl md:text-4xl lg:text-5xl font-bold mb-1">{{ value }}</div>
+            <div class="text-2xl md:text-4xl lg:text-5xl font-bold mb-1">{{ String(value).padStart(2, '0') }}</div>
             <div class="text-[10px] md:text-sm opacity-75 uppercase tracking-wider">{{ label }}</div>
           </div>
         </div>
@@ -78,7 +78,12 @@ const props = defineProps<{
 
 const scrollY = ref(0)
 const parallaxBg = ref<HTMLElement | null>(null)
-const countdown = ref<{ hari: number; jam: number; menit: number; detik: number } | null>(null)
+const countdown = ref({
+  hari: 0,
+  jam: 0,
+  menit: 0,
+  detik: 0
+})
 
 const handleScroll = () => {
   scrollY.value = window.scrollY
@@ -95,6 +100,13 @@ const updateCountdown = () => {
       jam: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
       menit: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
       detik: Math.floor((distance % (1000 * 60)) / 1000)
+    }
+  } else {
+    countdown.value = {
+      hari: 0,
+      jam: 0,
+      menit: 0,
+      detik: 0
     }
   }
 }

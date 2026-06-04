@@ -135,22 +135,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
-import Swal from 'sweetalert2'
-import AppLayout from '@/layouts/AppLayout.vue'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Plus, Trash2, MessageCircle, Search } from 'lucide-vue-next'
-import GuestDialog from '@/pages/Admin/Weddings/components/GuestDialog.vue'
+import Swal from 'sweetalert2'
+import { ref, reactive } from 'vue'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import Pagination from '@/components/ui/pagination/Pagination.vue'
+import PaginationEllipsis from '@/components/ui/pagination/PaginationEllipsis.vue'
+import PaginationLink from '@/components/ui/pagination/PaginationLink.vue'
 import PaginationList from '@/components/ui/pagination/PaginationList.vue'
 import PaginationListItem from '@/components/ui/pagination/PaginationListItem.vue'
-import PaginationLink from '@/components/ui/pagination/PaginationLink.vue'
-import PaginationPrev from '@/components/ui/pagination/PaginationPrev.vue'
 import PaginationNext from '@/components/ui/pagination/PaginationNext.vue'
-import PaginationEllipsis from '@/components/ui/pagination/PaginationEllipsis.vue'
+import PaginationPrev from '@/components/ui/pagination/PaginationPrev.vue'
+import AppLayout from '@/layouts/AppLayout.vue'
+import GuestDialog from '@/pages/Admin/Weddings/components/GuestDialog.vue'
 
 interface Guest {
   id: number
