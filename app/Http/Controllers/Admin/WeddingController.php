@@ -51,6 +51,7 @@ class WeddingController extends Controller
             'theme_secondary_color' => 'nullable|string|max:7',
             'theme_accent_color' => 'nullable|string|max:7',
             'theme_font_family' => 'nullable|string|max:255',
+            'template' => 'nullable|string|max:50',
         ]);
 
         $validated['user_id'] = auth()->id();
@@ -122,6 +123,7 @@ class WeddingController extends Controller
             'theme_accent_color' => 'nullable|string|max:7',
             'theme_font_family' => 'nullable|string|max:255',
             'is_active' => 'boolean',
+            'template' => 'nullable|string|max:50',
         ]);
 
         // Remove file fields from validated data - handle separately

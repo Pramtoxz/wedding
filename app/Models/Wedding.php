@@ -30,6 +30,7 @@ class Wedding extends Model
         'theme_accent_color',
         'theme_font_family',
         'is_active',
+        'template',
     ];
 
     protected $casts = [

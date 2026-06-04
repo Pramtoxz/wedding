@@ -91,7 +91,8 @@ const handleScroll = () => {
 
 const updateCountdown = () => {
   const now = new Date().getTime()
-  const weddingTime = new Date(props.weddingDate).getTime()
+  const dateStr = props.weddingDate ? props.weddingDate.replace(' ', 'T') : ''
+  const weddingTime = new Date(dateStr).getTime()
   const distance = weddingTime - now
 
   if (distance > 0) {

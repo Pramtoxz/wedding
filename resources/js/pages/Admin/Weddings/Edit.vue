@@ -13,6 +13,77 @@
       </div>
 
       <form @submit.prevent="submit" class="space-y-6">
+        <!-- Pilih Template -->
+        <Card>
+          <CardHeader>
+            <CardTitle>Pilih Template</CardTitle>
+            <p class="text-sm text-muted-foreground">Pilih desain tampilan untuk undangan Anda</p>
+          </CardHeader>
+          <CardContent>
+            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div
+                v-for="template in availableTemplates"
+                :key="template.id"
+                @click="form.template = template.id"
+                :class="[
+                  'relative cursor-pointer rounded-xl border-2 overflow-hidden transition-all duration-200 hover:shadow-lg',
+                  form.template === template.id
+                    ? 'border-primary shadow-md ring-2 ring-primary ring-offset-2'
+                    : 'border-border hover:border-primary/50'
+                ]"
+              >
+                <!-- Template Preview Mockup -->
+                <div :class="`bg-gradient-to-br ${template.preview_gradient} h-36 flex flex-col items-center justify-center relative overflow-hidden`">
+                  <!-- Decorative waves -->
+                  <div class="absolute bottom-0 left-0 right-0 h-8 opacity-30">
+                    <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="w-full h-full">
+                      <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" fill="white"/>
+                    </svg>
+                  </div>
+                  <!-- Heart icon -->
+                  <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center mb-2">
+                    <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                  </div>
+                  <!-- Names preview -->
+                  <p class="text-white text-xs font-semibold opacity-90">{{ form.bride_name || 'Bride' }} & {{ form.groom_name || 'Groom' }}</p>
+                  <!-- Badge -->
+                  <span v-if="template.badge" class="absolute top-2 right-2 text-xs bg-white/90 text-gray-800 px-2 py-0.5 rounded-full font-medium">{{ template.badge }}</span>
+                  <!-- Selected checkmark -->
+                  <div
+                    v-if="form.template === template.id"
+                    class="absolute top-2 left-2 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-md"
+                  >
+                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                </div>
+                <!-- Template Info -->
+                <div class="p-3">
+                  <p class="font-semibold text-sm">{{ template.name }}</p>
+                  <p class="text-xs text-muted-foreground mt-0.5 line-clamp-2">{{ template.description }}</p>
+                </div>
+              </div>
+
+              <!-- Slot untuk template baru yang akan datang -->
+              <div class="relative cursor-not-allowed rounded-xl border-2 border-dashed border-border overflow-hidden opacity-50">
+                <div class="bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-800 h-36 flex flex-col items-center justify-center">
+                  <svg class="w-8 h-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/>
+                  </svg>
+                  <p class="text-xs text-gray-400">Segera Hadir</p>
+                </div>
+                <div class="p-3">
+                  <p class="font-semibold text-sm text-muted-foreground">Template Baru</p>
+                  <p class="text-xs text-muted-foreground mt-0.5">Akan segera tersedia</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Informasi Mempelai</CardTitle>
@@ -92,7 +163,7 @@
               <InputError :message="form.errors.cover_image" />
             </div>
 
-            <div class="space-y-2">
+            <div v-if="form.template === 'default'" class="space-y-2">
               <Label for="cover_page_image">Foto Background Cover Page</Label>
               <p class="text-xs text-muted-foreground">Upload gambar untuk background halaman pembuka. Kosongkan untuk menggunakan gradient default.</p>
               <div v-if="wedding.cover_page_image" class="mb-2">
@@ -138,6 +209,7 @@
                   <option value="/music/wedding-5.mp3">A Thousand Years</option>
                   <option value="/music/wedding-6.mp3">Until I Found You</option>
                   <option value="/music/wedding-7.mp3">Beautiful In White</option>
+                  <option value="/music/wedding-8.mp3">Minang Instrumental</option>
                 </select>
                 <Button 
                   type="button" 
@@ -154,7 +226,7 @@
           </CardContent>
         </Card>
 
-        <Card>
+        <Card v-if="form.template === 'default'">
           <CardHeader>
             <CardTitle>Kustomisasi Tema</CardTitle>
           </CardHeader>
@@ -207,18 +279,24 @@
                 <p class="text-sm text-muted-foreground">Preview font yang dipilih</p>
               </div>
             </div>
+          </CardContent>
+        </Card>
 
-            <div class="space-y-2">
-              <Label>Status</Label>
-              <div class="flex items-center gap-2">
-                <input 
-                  id="is_active" 
-                  v-model="form.is_active" 
-                  type="checkbox" 
-                  class="w-4 h-4 rounded border-input"
-                />
-                <Label for="is_active" class="font-normal cursor-pointer">Aktifkan undangan</Label>
-              </div>
+        <!-- Status Undangan -->
+        <Card>
+          <CardHeader>
+            <CardTitle>Status Undangan</CardTitle>
+            <p class="text-sm text-muted-foreground">Atur apakah undangan pernikahan aktif atau tidak</p>
+          </CardHeader>
+          <CardContent>
+            <div class="flex items-center gap-2">
+              <input 
+                id="is_active" 
+                v-model="form.is_active" 
+                type="checkbox" 
+                class="w-4 h-4 rounded border-input"
+              />
+              <Label for="is_active" class="font-normal cursor-pointer">Aktifkan undangan</Label>
             </div>
           </CardContent>
         </Card>
@@ -248,6 +326,34 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import AppLayout from '@/layouts/AppLayout.vue'
 
+interface Template {
+  id: string
+  name: string
+  description: string
+  preview_color: string
+  preview_gradient: string
+  badge?: string
+}
+
+const availableTemplates: Template[] = [
+  {
+    id: 'default',
+    name: 'Classic Elegant',
+    description: 'Template elegan dengan wave divider dan warna tema yang bisa dikustomisasi',
+    preview_color: '#8B4513',
+    preview_gradient: 'from-rose-400 via-pink-500 to-purple-600',
+    badge: 'Default',
+  },
+  {
+    id: 'vintage-minang',
+    name: 'Vintage Minang',
+    description: 'Template tradisional Minangkabau dengan nuansa vintage, ornamen khas, dan video pembuka 3D',
+    preview_color: '#661217',
+    preview_gradient: 'from-yellow-700 via-yellow-600 to-amber-800',
+    badge: 'Baru',
+  },
+]
+
 interface Wedding {
   id: number
   bride_name: string
@@ -269,6 +375,7 @@ interface Wedding {
   theme_accent_color: string
   theme_font_family: string
   is_active: boolean
+  template: string
 }
 
 const props = defineProps<{
@@ -295,6 +402,7 @@ const form = useForm({
   theme_accent_color: props.wedding.theme_accent_color,
   theme_font_family: props.wedding.theme_font_family,
   is_active: props.wedding.is_active,
+  template: props.wedding.template || 'default',
 })
 
 const audioPlayer = ref<HTMLAudioElement | null>(null)
