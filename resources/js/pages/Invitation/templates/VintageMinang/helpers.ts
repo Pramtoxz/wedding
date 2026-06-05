@@ -1,17 +1,29 @@
 // ============ DATE & TIME HELPERS FOR VINTAGE MINANG ============
 
+/**
+ * Parse a date string (e.g. "2026-08-15" or "2026-08-15 10:00:00") into
+ * { year, month (1-12), day } WITHOUT timezone shifting.
+ * Date-only strings (no time part) are treated as LOCAL date, not UTC.
+ */
+function parseDateParts(date: string): { year: number; month: number; day: number; d: Date } {
+  const dateOnly = date.split(/[ T]/)[0]           // "2026-08-15"
+  const [year, month, day] = dateOnly.split('-').map(Number)
+  // Construct with explicit local time to avoid UTC-to-local shift
+  const d = new Date(year, month - 1, day)
+  return { year, month, day, d }
+}
+
 export function formatDateDots(date: string): string {
   if (!date) return ''
-  const safeDate = date.replace(' ', 'T')
-  const d = new Date(safeDate)
+  const { year, month, day } = parseDateParts(date)
   const pad = (n: number) => String(n).padStart(2, '0')
-  return `${pad(d.getDate())} . ${pad(d.getMonth() + 1)} . ${d.getFullYear()}`
+  return `${pad(day)} . ${pad(month)} . ${year}`
 }
 
 export function formatDayName(date: string): string {
   if (!date) return ''
-  const safeDate = date.replace(' ', 'T')
-  return new Date(safeDate).toLocaleDateString('id-ID', { weekday: 'long' })
+  const { d } = parseDateParts(date)
+  return d.toLocaleDateString('id-ID', { weekday: 'long' })
 }
 
 export function timeAgo(dateStr: string): string {
