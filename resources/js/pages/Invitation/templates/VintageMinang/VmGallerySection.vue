@@ -4,7 +4,6 @@
     <div class="vm-gallery-inner" data-anim="fadeUp">
       <p class="vm-gallery-tag">Our Gallery</p>
       <h2 class="vm-gallery-title">Constantly, consistently,<br>continually, You.</h2>
-      <div class="vm-gallery-ornament"><img src="/minang-assets/minang-ornamen.png" alt="" /></div>
 
       <!-- Carousel (first 6) -->
       <div v-if="carouselGalleries.length > 0" class="vm-gallery-carousel">
@@ -89,9 +88,6 @@ function startCarouselTimer() {
   font-size: 23px; color: var(--vm-maroon);
   font-weight: 400; line-height: 1.5; margin-bottom: 16px;
 }
-.vm-gallery-ornament { text-align: center; margin: 12px 0 20px; }
-.vm-gallery-ornament img { width: 160px; opacity: 0.7; filter: sepia(30%) saturate(80%); }
-
 /* Carousel */
 .vm-gallery-carousel {
   position: relative; width: 100%; aspect-ratio: 4/3;

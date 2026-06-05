@@ -4,7 +4,7 @@
     <div class="vm-closing-overlay"></div>
     <div class="vm-closing-inner" data-anim="fadeUp">
       <div class="vm-gallery-ornament">
-        <img src="/minang-assets/minang-ornamen.png" alt="" style="filter:invert(90%) sepia(30%) saturate(80%); opacity:0.6" />
+        <!-- <img src="/minang-assets/minang-ornamen.png" alt="" style="filter:invert(90%) sepia(30%) saturate(80%); opacity:0.6" /> -->
       </div>
       <p class="vm-closing-text">
         {{ wedding.closing_text || 'Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir dan memberikan doa restunya untuk pernikahan kami.' }}<br><br>
@@ -57,8 +57,8 @@ defineProps<{ wedding: Wedding }>()
   position: relative; z-index: 2;
   padding: 60px 30px; text-align: center;
 }
-.vm-gallery-ornament { text-align: center; margin: 12px 0 20px; }
-.vm-gallery-ornament img { width: 160px; opacity: 0.7; filter: sepia(30%) saturate(80%); }
+/* .vm-gallery-ornament { text-align: center; margin: 12px 0 20px; }
+.vm-gallery-ornament img { width: 160px; opacity: 0.7; filter: sepia(30%) saturate(80%); } */
 .vm-closing-text {
   font-family: 'Poppins', sans-serif;
   font-size: 14px; color: rgba(255,251,233,0.8);

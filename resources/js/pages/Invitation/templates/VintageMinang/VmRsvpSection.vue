@@ -144,7 +144,7 @@ function submitWish() {
   font-size: 14px; color: rgba(255,251,233,0.8); margin-bottom: 20px;
 }
 .vm-gallery-ornament { text-align: center; margin: 12px 0 20px; }
-.vm-gallery-ornament img { width: 160px; opacity: 0.7; filter: sepia(30%) saturate(80%); }
+.vm-gallery-ornament img { filter: sepia(30%) saturate(80%); }
 .vm-rsvp-form {
   display: flex; flex-direction: column;
   gap: 14px; text-align: left;

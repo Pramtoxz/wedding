@@ -4,7 +4,6 @@
     <div class="vm-gift-inner" data-anim="fadeUp">
       <p class="vm-gift-tag">Wedding Gift</p>
       <h2 class="vm-gift-title">Hadiah Pernikahan</h2>
-      <div class="vm-gallery-ornament"><img src="/minang-assets/minang-ornamen.png" alt="" /></div>
       <p class="vm-gift-desc">
         Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Dan jika memberi adalah ungkapan tanda kasih Anda, Anda dapat memberi kado secara cashless.
       </p>
@@ -44,8 +43,6 @@ defineEmits<{ copy: [text: string] }>()
   font-size: 49px; color: var(--vm-maroon);
   line-height: 1.1; margin-bottom: 12px;
 }
-.vm-gallery-ornament { text-align: center; margin: 12px 0 20px; }
-.vm-gallery-ornament img { width: 160px; opacity: 0.7; filter: sepia(30%) saturate(80%); }
 .vm-gift-desc {
   font-family: 'Poppins', sans-serif;
   font-size: 14px; color: var(--vm-maroon);
