@@ -25,9 +25,13 @@
     <div class="vm-desk-cov">
       <div class="vm-desk-bg-overlay"></div>
       <div class="vm-desk-content">
-        <p class="vm-desk-label">The Wedding Of</p>
-        <h1 class="vm-desk-names">{{ wedding.bride_name }} &amp; {{ wedding.groom_name }}</h1>
-        <p class="vm-desk-date">{{ formatDateShort(wedding.wedding_date) }}</p>
+        <p class="vm-desk-label">We Found Love</p>
+        <div class="vm-desk-gold-line"></div>
+        <p class="vm-desk-love-text">
+          {{ wedding.love_story || 'Karena cinta bukan tentang menemukan seseorang yang sempurna, melainkan tentang melihat seseorang yang tidak sempurna dengan cara yang sempurna.' }}
+        </p>
+        <div class="vm-desk-gold-line"></div>
+        <p class="vm-desk-couple">{{ wedding.bride_name }} &amp; {{ wedding.groom_name }}</p>
       </div>
     </div>
 
@@ -35,21 +39,9 @@
     <div class="vm-isi">
 
       <!-- ====== COVER / BUKA UNDANGAN ====== -->
-      <section v-if="!isOpened" class="vm-section-cover">
-        <video
-          ref="videoRef"
-          class="vm-cover-video"
-          autoplay
-          playsinline
-          webkit-playsinline
-          muted
-          preload="auto"
-          loop
-        >
-          <source src="/minang-assets/3D-minang-motion.mp4" type="video/mp4" />
-        </video>
+      <section v-if="!isPlayingVideo && !isOpened" class="vm-section-cover">
         <div class="vm-cover-bg-overlay"></div>
-        <div class="vm-cover-inner" :class="{ show: coverContentVisible }">
+        <div class="vm-cover-inner show">
           <div class="vm-cover-spacer"></div>
           <p class="vm-cover-label">WEDDING INVITATION</p>
           <h2 class="vm-cover-names-big">{{ wedding.bride_name }} &amp; {{ wedding.groom_name }}</h2>
@@ -64,39 +56,61 @@
         </div>
       </section>
 
+      <!-- ====== VIDEO INTRO (muncul setelah klik Buka Undangan) ====== -->
+      <section v-if="isPlayingVideo" class="vm-section-video-intro">
+        <video
+          ref="videoRef"
+          class="vm-intro-video"
+          autoplay
+          playsinline
+          webkit-playsinline
+          muted
+          preload="auto"
+        >
+          <source src="/minang-assets/3D-minang-motion.mp4" type="video/mp4" />
+        </video>
+        <div class="vm-video-intro-overlay"></div>
+
+        <!-- Teks nama & tanggal — muncul fade-in di detik ke-14 -->
+        <div class="vm-video-caption" :class="{ visible: videoCaptionVisible }">
+          <p class="vm-vc-label">The Wedding Of</p>
+          <h2 class="vm-vc-names">{{ wedding.bride_name }} &amp; {{ wedding.groom_name }}</h2>
+          <div class="vm-vc-line"></div>
+          <p class="vm-vc-date">{{ formatDateDots(wedding.wedding_date) }}</p>
+        </div>
+
+        <button class="vm-btn-skip" @click="skipVideo">Skip ›</button>
+      </section>
+
       <!-- ====== HERO / HOME SECTION ====== -->
       <section v-if="isOpened" class="vm-section-hero" :style="heroStyle">
         <div class="vm-hero-particles" ref="particlesRef"></div>
-        <div class="vm-hero-overlay"></div>
+
         <div class="vm-hero-content">
           <div class="vm-hero-spacer"></div>
-          <p v-if="wedding.opening_text" class="vm-hero-opening">{{ wedding.opening_text }}</p>
-          <p class="vm-hero-sub">The Wedding Of</p>
-          <h1 class="vm-hero-name-bride">{{ wedding.bride_name }}</h1>
-          <p class="vm-hero-and">and</p>
-          <h1 class="vm-hero-name-groom">{{ wedding.groom_name }}</h1>
+          <p class="vm-hero-sub">We Found Love</p>
+          <div class="vm-hero-gold-line"></div>
+          <p class="vm-hero-love-text">
+            {{ wedding.love_story || 'Karena cinta bukan tentang menemukan seseorang yang sempurna, melainkan tentang melihat seseorang yang tidak sempurna dengan cara yang sempurna.' }}
+          </p>
+          <div class="vm-hero-gold-line"></div>
+          <p class="vm-hero-couple-small">{{ wedding.bride_name }} &amp; {{ wedding.groom_name }}</p>
           <p class="vm-hero-date">{{ formatDateDots(wedding.wedding_date) }}</p>
           <div class="vm-hero-spacer"></div>
         </div>
       </section>
-
-      <!-- ====== WE FOUND LOVE + QUOTE ====== -->
-      <section v-if="isOpened" class="vm-section-love">
+<!-- 
+      ====== LOVE STORY (dari dashboard) ======
+      <section v-if="isOpened && wedding.love_story" class="vm-section-love">
         <div class="vm-love-bg">
           <div class="vm-love-content" data-anim="fadeUp">
-            <p class="vm-love-label">WE FOUND LOVE</p>
+            <p class="vm-love-label">Our Love Story</p>
             <div class="vm-gold-line"></div>
-            <p class="vm-love-arabic" dir="rtl">
-              وَمِنْ اٰيٰتِهٖٓ اَنْ خَلَقَ لَكُمْ مِّنْ اَنْفُسِكُمْ اَزْوَاجًا لِّتَسْكُنُوْٓا اِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَّوَدَّةً وَّرَحْمَةً ۗاِنَّ فِيْ ذٰلِكَ لَاٰيٰتٍ لِّقَوْمٍ يَّتَفَكَّرُوْنَ
-            </p>
-            <p class="vm-love-ayat">
-              "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir."
-            </p>
-            <p class="vm-love-source">(QS. Ar-Rum: 21)</p>
+            <p class="vm-love-story-text">{{ wedding.love_story }}</p>
             <div class="vm-gold-line"></div>
           </div>
         </div>
-      </section>
+      </section> -->
 
       <!-- ====== BRIDE & GROOM ====== -->
       <section v-if="isOpened" class="vm-section-couple">
@@ -370,7 +384,7 @@
           </div>
           <p class="vm-closing-text">
             {{ wedding.closing_text || 'Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Anda berkenan hadir dan memberikan doa restunya untuk pernikahan kami.' }}<br><br>
-            Atas do\'a &amp; restunya,<br>
+            Atas do'a &amp; restunya,<br>
             kami ucapkan terima kasih.
           </p>
           <h2 class="vm-closing-names">{{ wedding.bride_name?.toUpperCase() }} &amp; {{ wedding.groom_name?.toUpperCase() }}</h2>
@@ -445,6 +459,7 @@ interface Wedding {
   cover_page_image: string | null
   opening_text: string | null
   closing_text: string | null
+  love_story: string | null
   music_url: string | null
   slug: string
   events: WeddingEvent[]
@@ -468,9 +483,10 @@ const props = defineProps<{
 
 // ============ STATE ============
 const isOpened = ref(false)
+const isPlayingVideo = ref(false)
+const videoCaptionVisible = ref(false)
 const isMusicPlaying = ref(false)
 const hasUserInteracted = ref(false)
-const coverContentVisible = ref(false)
 const audioRef = ref<HTMLAudioElement | null>(null)
 const videoRef = ref<HTMLVideoElement | null>(null)
 const particlesRef = ref<HTMLElement | null>(null)
@@ -509,29 +525,8 @@ const wishForm = useForm({
 
 // ============ LIFECYCLE ============
 onMounted(() => {
-  initVideoAutoplay()
   initCountdown()
   initScrollAnim()
-  
-  // Add global event listeners for first user interaction to play music
-  const handleFirstInteraction = () => {
-    if (hasUserInteracted.value || !audioRef.value) return
-    hasUserInteracted.value = true
-    
-    audioRef.value.muted = false
-    audioRef.value.volume = 0.5
-    audioRef.value.play().then(() => {
-      isMusicPlaying.value = true
-    }).catch((err) => {
-      console.error("Audio play failed:", err)
-    })
-  }
-
-  // Listen for ANY user interaction
-  document.addEventListener('click', handleFirstInteraction, { once: true })
-  document.addEventListener('touchstart', handleFirstInteraction, { once: true })
-  document.addEventListener('scroll', handleFirstInteraction, { once: true })
-  document.addEventListener('keydown', handleFirstInteraction, { once: true })
 })
 
 onUnmounted(() => {
@@ -541,38 +536,68 @@ onUnmounted(() => {
   if (audioRef.value) audioRef.value.pause()
 })
 
-// ============ VIDEO INIT ============
-function initVideoAutoplay() {
+// ============ VIDEO INTRO INIT ============
+function initVideoIntro() {
   const video = videoRef.value
   if (!video) return
 
   video.muted = true
   video.playsInline = true
+  video.loop = false
 
   const tryPlay = () => {
     video.play().catch(() => {
-      // Blocked, show content immediately
-      coverContentVisible.value = true
+      // Jika video tidak bisa diputar, langsung masuk undangan
+      enterInvitation()
     })
   }
 
   tryPlay()
   video.addEventListener('canplay', tryPlay, { once: true })
 
-  // Show content after 14s or on video timeupdate
+  // Munculkan caption nama & tanggal di detik ke-14
   video.addEventListener('timeupdate', () => {
-    if (video.currentTime >= 14) coverContentVisible.value = true
+    if (video.currentTime >= 14 && !videoCaptionVisible.value) {
+      videoCaptionVisible.value = true
+    }
   })
-  setTimeout(() => { coverContentVisible.value = true }, 5000)
 
-  video.addEventListener('error', () => { coverContentVisible.value = true })
+  // Video selesai → freeze di frame terakhir, buka konten bawah
+  video.addEventListener('ended', () => {
+    // Biarkan video diam di frame terakhir (tidak di-loop)
+    // Langsung tampilkan konten undangan agar bisa di-scroll
+    isOpened.value = true
+    setTimeout(() => {
+      initParticles()
+      initScrollAnim()
+      startCarouselTimer()
+    }, 100)
+  })
+
+  video.addEventListener('error', () => { enterInvitation() })
 }
 
-// ============ OPEN INVITATION ============
-function openInvitation() {
+// ============ SKIP VIDEO ============
+function skipVideo() {
+  if (videoRef.value) videoRef.value.pause()
+  enterInvitation()
+}
+
+// ============ ENTER INVITATION (setelah video) ============
+function enterInvitation() {
+  isPlayingVideo.value = false
+  videoCaptionVisible.value = false
   isOpened.value = true
-  
-  // Also try to play music when opening invitation (if not already played)
+  setTimeout(() => {
+    initParticles()
+    initScrollAnim()
+    startCarouselTimer()
+  }, 100)
+}
+
+// ============ OPEN INVITATION (klik Buka Undangan → putar video dulu) ============
+function openInvitation() {
+  // Mulai musik saat user klik
   if (!hasUserInteracted.value && audioRef.value) {
     hasUserInteracted.value = true
     audioRef.value.muted = false
@@ -580,15 +605,16 @@ function openInvitation() {
     audioRef.value.play().then(() => {
       isMusicPlaying.value = true
     }).catch((err) => {
-      console.error("Audio play failed:", err)
+      console.error('Audio play failed:', err)
     })
   }
-  
-  // Init particles after DOM renders
+
+  // Tampilkan section video intro
+  isPlayingVideo.value = true
+
+  // Tunggu DOM render lalu inisialisasi video
   setTimeout(() => {
-    initParticles()
-    initScrollAnim()
-    startCarouselTimer()
+    initVideoIntro()
   }, 100)
 }
 
@@ -817,33 +843,50 @@ function timeAgo(dateStr: string) {
 
 .vm-desk-bg-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.75) 75%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.72) 100%);
 }
 
 .vm-desk-content {
   position: relative; z-index: 2;
   text-align: center;
-  padding: 50px; width: 100%;
+  padding: 50px 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .vm-desk-label {
   font-family: 'Cinzel', serif;
-  font-size: 14px; font-weight: 500; letter-spacing: 2px;
-  color: var(--vm-white); text-transform: uppercase;
-  margin-bottom: 8px; line-height: 3.2;
+  font-size: 13px; font-weight: 500; letter-spacing: 3px;
+  color: var(--vm-gold); text-transform: uppercase;
+  margin-bottom: 18px;
 }
 
-.vm-desk-names {
+.vm-desk-gold-line {
+  width: 100px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--vm-gold), transparent);
+  margin: 0 auto 20px;
+}
+
+.vm-desk-love-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px; font-weight: 300;
+  color: rgba(255,251,233,0.92);
+  line-height: 1.9; font-style: italic;
+  text-align: center;
+  white-space: pre-line;
+  margin-bottom: 20px;
+  max-width: 380px;
+}
+
+.vm-desk-couple {
   font-family: 'Aboreto', cursive;
-  font-size: 56px; font-weight: 400; color: var(--vm-white);
-  line-height: 1.1; text-transform: capitalize;
-}
-
-.vm-desk-date {
-  font-family: 'Cinzel', serif;
-  font-size: 14px; font-weight: 500; letter-spacing: 2px;
-  color: var(--vm-white); text-transform: uppercase;
-  margin-top: 8px; line-height: 3.2;
+  font-size: 22px; font-weight: 400;
+  color: var(--vm-gold);
+  letter-spacing: 1px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.5);
 }
 
 .vm-isi {
@@ -882,8 +925,8 @@ function timeAgo(dateStr: string) {
 
 .vm-cover-bg-overlay {
   position: absolute; inset: 0;
-  background: var(--vm-maroon-grad);
-  opacity: 0; border-radius: 10px; z-index: 1;
+  background: linear-gradient(180deg, rgba(102,18,23,0.45) 0%, rgba(2,1,1,0.65) 100%);
+  border-radius: 10px; z-index: 1;
 }
 
 .vm-cover-inner {
@@ -945,6 +988,100 @@ function timeAgo(dateStr: string) {
 }
 .vm-btn-buka:hover { background: var(--vm-gold); color: var(--vm-black); }
 
+/* ====== VIDEO INTRO SECTION ====== */
+.vm-section-video-intro {
+  position: relative;
+  width: 100%; height: 100vh;
+  overflow: hidden;
+  background: #000;
+  z-index: 999;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.vm-intro-video {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; z-index: 0;
+}
+
+.vm-video-intro-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.15);
+  z-index: 1;
+}
+
+.vm-btn-skip {
+  position: absolute;
+  bottom: 28px; right: 24px;
+  z-index: 10;
+  background: rgba(0,0,0,0.45);
+  border: 1.5px solid rgba(223,181,132,0.7);
+  color: var(--vm-gold);
+  font-family: 'Cinzel', serif;
+  font-size: 13px; font-weight: 600; letter-spacing: 2px;
+  padding: 9px 22px; cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.25s;
+  backdrop-filter: blur(4px);
+  text-transform: uppercase;
+}
+.vm-btn-skip:hover {
+  background: rgba(223,181,132,0.2);
+  border-color: var(--vm-gold);
+}
+
+/* ====== VIDEO CAPTION (muncul di detik ke-14) ====== */
+.vm-video-caption {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, calc(-50% + 20px));
+  z-index: 10;
+  text-align: center;
+  width: 88%;
+  opacity: 0;
+  transition: opacity 0.9s ease, transform 0.9s ease;
+  pointer-events: none;
+}
+.vm-video-caption.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.vm-vc-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px; font-weight: 500; letter-spacing: 3px;
+  color: var(--vm-gold); text-transform: uppercase;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+  margin-bottom: 10px;
+}
+
+.vm-vc-names {
+  font-family: 'Aboreto', cursive;
+  font-size: 34px; font-weight: 400;
+  color: var(--vm-white);
+  line-height: 1.2;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.85), 0 0 40px rgba(0,0,0,0.5);
+  margin: 0 0 14px;
+}
+
+.vm-vc-line {
+  width: 80px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--vm-gold), transparent);
+  margin: 0 auto 14px;
+}
+
+.vm-vc-date {
+  font-family: 'Cinzel', serif;
+  font-size: 14px; font-weight: 500; letter-spacing: 5px;
+  color: var(--vm-gold);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+}
+
+@media (max-width: 480px) {
+  .vm-vc-names { font-size: 26px; }
+  .vm-video-caption { top: 50%; }
+}
+
 /* ====== HERO ====== */
 .vm-section-hero {
   position: relative;
@@ -961,10 +1098,7 @@ function timeAgo(dateStr: string) {
   z-index: 0; pointer-events: none;
 }
 
-.vm-hero-overlay {
-  position: absolute; inset: 0;
-  background: rgba(2,1,1,0.15);
-}
+
 
 .vm-hero-content {
   position: relative; z-index: 2;
@@ -974,31 +1108,35 @@ function timeAgo(dateStr: string) {
 
 .vm-hero-sub {
   font-family: 'Cinzel', serif;
-  font-size: 22px; font-weight: 500; color: var(--vm-gold);
-  text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px;
+  font-size: 14px; font-weight: 500; color: var(--vm-gold);
+  text-transform: uppercase; letter-spacing: 4px; margin-bottom: 20px;
 }
-.vm-hero-name-bride, .vm-hero-name-groom {
-  font-family: 'Aboreto', cursive;
-  font-size: 80px; font-weight: 400; color: var(--vm-gold);
-  line-height: 1; text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+.vm-hero-gold-line {
+  width: 100px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--vm-gold), transparent);
+  margin: 0 auto 20px;
 }
-.vm-hero-and {
+.vm-hero-love-text {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px; font-weight: 300;
+  color: rgba(255,251,233,0.92);
+  line-height: 2; font-style: italic;
+  white-space: pre-line;
+  text-align: center;
+  max-width: 400px; margin: 0 auto 20px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.7);
+}
+.vm-hero-couple-small {
   font-family: 'Aboreto', cursive;
-  font-size: 36px; color: var(--vm-gold);
-  opacity: 0.8; margin: 4px 0;
+  font-size: 28px; font-weight: 400; color: var(--vm-gold);
+  text-shadow: 0 2px 16px rgba(0,0,0,0.6);
+  margin-bottom: 6px;
 }
 .vm-hero-date {
   font-family: 'Cinzel', serif;
-  font-size: 22px; font-weight: 500; color: var(--vm-gold);
-  letter-spacing: 4px; margin-top: 16px;
-}
-.vm-hero-opening {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px; font-weight: 300;
-  color: rgba(255,251,233,0.85);
-  line-height: 1.8; font-style: italic;
-  max-width: 400px; margin: 0 auto 24px;
-  text-align: center;
+  font-size: 14px; font-weight: 500; color: var(--vm-gold);
+  letter-spacing: 5px; margin-top: 8px;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.6);
 }
 
 /* ====== WE FOUND LOVE ====== */
@@ -1030,23 +1168,21 @@ function timeAgo(dateStr: string) {
   margin: 16px auto;
 }
 .vm-love-arabic {
-  font-family: 'Amiri', serif;
-  font-size: 24px;
-  color: var(--vm-gold);
-  line-height: 1.8;
-  margin: 12px 0 20px;
-  text-align: center;
+  display: none;
 }
 .vm-love-ayat {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px; font-weight: 300;
-  color: rgba(255,251,233,0.85);
-  line-height: 1.9; font-style: italic;
+  display: none;
 }
 .vm-love-source {
+  display: none;
+}
+.vm-love-story-text {
   font-family: 'Poppins', sans-serif;
-  font-size: 13px; color: var(--vm-gold);
-  margin-top: 8px; letter-spacing: 0.5px;
+  font-size: 14px; font-weight: 300;
+  color: rgba(255,251,233,0.9);
+  line-height: 2; font-style: italic;
+  white-space: pre-line;
+  text-align: center;
 }
 
 /* ====== COUPLE ====== */

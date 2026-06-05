@@ -24,6 +24,7 @@ class Wedding extends Model
         'cover_page_image',
         'opening_text',
         'closing_text',
+        'love_story',
         'music_url',
         'theme_primary_color',
         'theme_secondary_color',

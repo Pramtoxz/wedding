@@ -193,6 +193,18 @@
               />
             </div>
 
+            <!-- Love Story - khusus template Vintage Minang -->
+            <div v-if="form.template === 'vintage-minang'" class="space-y-2">
+              <Label for="love_story">❤️ Love Story</Label>
+              <p class="text-xs text-muted-foreground">Cerita singkat perjalanan cinta Anda. Akan ditampilkan di undangan setelah nama pasangan.</p>
+              <textarea 
+                id="love_story" 
+                v-model="form.love_story" 
+                class="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                placeholder="Kami bertemu di... Cinta kami berawal dari..."
+              />
+            </div>
+
             <div class="space-y-2">
               <Label for="music_url">Musik Latar</Label>
               <div class="flex gap-2">
@@ -369,6 +381,7 @@ interface Wedding {
   cover_page_image: string | null
   opening_text: string | null
   closing_text: string | null
+  love_story: string | null
   music_url: string | null
   theme_primary_color: string
   theme_secondary_color: string
@@ -396,6 +409,7 @@ const form = useForm({
   cover_page_image: null as File | null,
   opening_text: props.wedding.opening_text || '',
   closing_text: props.wedding.closing_text || '',
+  love_story: props.wedding.love_story || '',
   music_url: props.wedding.music_url || '',
   theme_primary_color: props.wedding.theme_primary_color,
   theme_secondary_color: props.wedding.theme_secondary_color,
