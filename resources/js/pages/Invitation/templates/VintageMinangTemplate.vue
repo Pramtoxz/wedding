@@ -91,7 +91,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import type { Wedding, Guest } from './VintageMinang/types'
 import VmCoverSection from './VintageMinang/VmCoverSection.vue'
 import VmHeroSection from './VintageMinang/VmHeroSection.vue'
@@ -154,7 +154,13 @@ function skipVideo() {
 function enterInvitation() {
   isPlayingVideo.value = false
   isOpened.value = true
-  setTimeout(() => initScrollAnim(), 100)
+  nextTick(() => {
+    // Scroll ke atas konten undangan
+    window.scrollTo({ top: 0, behavior: 'instant' })
+    const isi = document.querySelector('.vm-isi') as HTMLElement | null
+    if (isi) isi.scrollTop = 0
+    setTimeout(() => initScrollAnim(), 150)
+  })
 }
 
 // ============ MUSIC TOGGLE ============

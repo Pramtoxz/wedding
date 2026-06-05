@@ -1,6 +1,6 @@
 <template>
   <!-- ====== COVER / BUKA UNDANGAN ====== -->
-  <section v-if="!isPlayingVideo && !isOpened" class="vm-section-cover">
+  <section v-show="!isPlayingVideo && !isOpened" class="vm-section-cover">
     <div class="vm-cover-bg-overlay"></div>
     <div class="vm-cover-inner show">
       <div class="vm-cover-spacer"></div>
@@ -16,7 +16,11 @@
   </section>
 
   <!-- ====== VIDEO INTRO ====== -->
-  <section v-if="isPlayingVideo" class="vm-section-video-intro">
+  <section
+    v-show="isPlayingVideo"
+    class="vm-section-video-intro"
+    :class="{ 'vm-video-fading': isFadingOut }"
+  >
     <video
       ref="videoRef"
       class="vm-intro-video"
@@ -43,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, onBeforeUnmount } from 'vue'
 import type { Wedding, Guest } from './types'
 import { formatDateDots } from './helpers'
 
@@ -62,6 +66,8 @@ const emit = defineEmits<{
 
 const videoRef = ref<HTMLVideoElement | null>(null)
 const captionVisible = ref(false)
+const isFadingOut = ref(false)
+let videoFallbackTimer: ReturnType<typeof setTimeout> | null = null
 
 // Inisialisasi video saat isPlayingVideo berubah jadi true
 watch(
@@ -83,25 +89,75 @@ function initVideo() {
   video.playsInline = true
   video.loop = false
 
-  const tryPlay = () => {
-    video.play().catch(() => emit('entered'))
-  }
+  // Bersihkan listeners sebelumnya
+  video.onended = null
+  video.onerror = null
+  video.ontimeupdate = null
 
-  tryPlay()
-  video.addEventListener('canplay', tryPlay, { once: true })
+  const handleEnded = () => finishVideo()
+  const handleError = () => finishVideo()
 
-  video.addEventListener('timeupdate', () => {
+  video.ontimeupdate = () => {
     if (video.currentTime >= 14 && !captionVisible.value) {
       captionVisible.value = true
     }
-  })
+  }
 
-  video.addEventListener('ended', () => {
-    emit('entered')
-  })
+  video.onended = handleEnded
+  video.onerror = handleError
 
-  video.addEventListener('error', () => emit('entered'))
+  // Coba putar video
+  const tryPlay = () => {
+    const playPromise = video.play()
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // Autoplay gagal, langsung masuk undangan
+        finishVideo()
+      })
+    }
+  }
+
+  if (video.readyState >= 3) {
+    tryPlay()
+  } else {
+    video.addEventListener('canplay', tryPlay, { once: true })
+    // Fallback jika canplay tidak terpicu dalam 3 detik
+    videoFallbackTimer = setTimeout(() => tryPlay(), 3000)
+  }
+
+  // Fallback timer: jika video tidak selesai dalam 35 detik, lanjut ke undangan
+  videoFallbackTimer = setTimeout(() => {
+    if (props.isPlayingVideo) finishVideo()
+  }, 35000)
 }
+
+function finishVideo() {
+  if (!props.isPlayingVideo) return // sudah selesai
+  isFadingOut.value = true
+  clearFallbackTimer()
+  // Tunggu animasi fade-out (0.8s) lalu emit entered
+  setTimeout(() => {
+    isFadingOut.value = false
+    emit('entered')
+  }, 800)
+}
+
+function clearFallbackTimer() {
+  if (videoFallbackTimer !== null) {
+    clearTimeout(videoFallbackTimer)
+    videoFallbackTimer = null
+  }
+}
+
+onBeforeUnmount(() => {
+  clearFallbackTimer()
+  if (videoRef.value) {
+    videoRef.value.onended = null
+    videoRef.value.onerror = null
+    videoRef.value.ontimeupdate = null
+    videoRef.value.pause()
+  }
+})
 </script>
 
 <style scoped>
@@ -181,6 +237,12 @@ function initVideo() {
   background: #000;
   z-index: 999;
   display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.8s ease;
+  opacity: 1;
+}
+.vm-section-video-intro.vm-video-fading {
+  opacity: 0;
+  pointer-events: none;
 }
 .vm-intro-video {
   position: absolute; top: 0; left: 0;
