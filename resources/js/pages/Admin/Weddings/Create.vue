@@ -197,6 +197,7 @@
                   <option value="/music/wedding-5.mp3">A Thousand Years</option>
                   <option value="/music/wedding-6.mp3">Until I Found You</option>
                   <option value="/music/wedding-7.mp3">Beautiful In White</option>
+                  <option value="/music/wedding-8.mp3">Minang Instrumental</option>
                 </select>
                 <Button 
                   type="button" 

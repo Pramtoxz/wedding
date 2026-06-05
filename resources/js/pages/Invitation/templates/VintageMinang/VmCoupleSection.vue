@@ -110,13 +110,13 @@ defineProps<{ wedding: Wedding }>()
 }
 .vm-person-img { width: 100%; height: 100%; object-fit: cover; }
 .vm-photo-letter {
-  font-family: 'Aboreto', cursive;
+  font-family: 'Poppins', cursive;
   font-size: 60px; color: var(--vm-maroon); opacity: 0.5;
 }
 .vm-person-details { flex: 1; }
 .vm-person-title-big {
-  font-family: 'Pinyon Script', cursive;
-  font-size: 69px; color: var(--vm-maroon);
+  font-family: 'ZCOOL XiaoWei,serif', cursive;
+  font-size: 55px; color: var(--vm-maroon);
   line-height: 1; margin-bottom: 4px;
 }
 .vm-person-from {

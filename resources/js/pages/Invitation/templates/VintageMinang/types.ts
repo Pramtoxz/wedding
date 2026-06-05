@@ -2,13 +2,12 @@
 
 export interface WeddingEvent {
   id: number
-  name: string
-  date?: string
-  start_time?: string
-  end_time?: string
-  location: string
+  event_name: string
+  event_date?: string
+  event_time?: string
+  location_name: string
   address?: string
-  maps_url?: string
+  map_url?: string
   order: number
 }
 

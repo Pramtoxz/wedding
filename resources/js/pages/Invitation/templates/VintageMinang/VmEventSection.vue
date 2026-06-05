@@ -35,18 +35,18 @@
         class="vm-acara-card"
         data-anim="fadeUp"
       >
-        <h3 class="vm-acara-title">{{ event.name }}</h3>
+        <h3 class="vm-acara-title">{{ event.event_name }}</h3>
         <p class="vm-acara-will">Akan dilaksanakan pada:</p>
-        <p class="vm-acara-day">{{ formatDayName(event.date || wedding.wedding_date) }}</p>
-        <p class="vm-acara-date">{{ formatDateDots(event.date || wedding.wedding_date) }}</p>
-        <p class="vm-acara-time">Pukul {{ event.start_time }} WIB</p>
+        <p class="vm-acara-day">{{ formatDayName(event.event_date || wedding.wedding_date) }}</p>
+        <p class="vm-acara-date">{{ formatDateDots(event.event_date || wedding.wedding_date) }}</p>
+        <p class="vm-acara-time">Pukul {{ event.event_time }} WIB</p>
         <p class="vm-acara-at">Bertempat di:</p>
-        <p class="vm-acara-venue">{{ event.location }}</p>
+        <p class="vm-acara-venue">{{ event.location_name }}</p>
         <p v-if="event.address" class="vm-acara-addr">{{ event.address }}</p>
         <a
-          v-if="event.maps_url"
+          v-if="event.map_url"
           class="vm-btn-maps"
-          :href="event.maps_url"
+          :href="event.map_url"
           target="_blank"
           rel="noopener"
         >Open Maps</a>
