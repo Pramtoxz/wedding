@@ -74,6 +74,7 @@ function initParticles() {
 .vm-hero-content {
   position: relative; z-index: 2;
   text-align: center; width: 100%; padding: 50px 20px;
+  top: -210px;
 }
 .vm-hero-spacer { height: 60px; }
 .vm-hero-sub {
